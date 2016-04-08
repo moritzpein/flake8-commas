@@ -1,6 +1,8 @@
-from flake8_commas import CommaChecker
 import os
+from unittest import expectedFailure
 from unittest import TestCase
+
+from flake8_commas import CommaChecker
 
 
 class TestChecks(TestCase):
@@ -22,6 +24,13 @@ class CommaTestChecks(TestCase):
         comma_checker = CommaChecker(None, filename=get_absolute_path('data/multiline_bad_dict.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
             {'col': 14, 'line': 2, 'message': 'C812 missing trailing comma'},
+        ])
+
+    @expectedFailure
+    def test_multiline_bad_dict_with_boolean_term(self):
+        comma_checker = CommaChecker(None, filename=get_absolute_path('data/multiline_bad_dict_with_boolean_term.py'))
+        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
+            {'col': 14, 'line': 3, 'message': 'C812 missing trailing comma'},
         ])
 
     def test_bad_list(self):
@@ -51,6 +60,7 @@ class CommaTestChecks(TestCase):
     def test_no_comma_required_multiline_if(self):
         comma_checker = CommaChecker(None, filename=get_absolute_path('data/multiline_if.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
+
 
 def get_absolute_path(filepath):
     return os.path.join(os.path.dirname(__file__), filepath)
